@@ -9,6 +9,9 @@ import { Button, Header, Image, Container } from 'semantic-ui-react'
 // markdown for external docs description
 import Markdown from 'react-markdown/with-html'
 
+// import html-react-parser
+import parser from 'html-react-parser'
+
 // services
 import { subscribe, unsubscribe } from 'services/api-catalog'
 import { isAuthenticated } from 'services/self'
@@ -52,25 +55,9 @@ function InfoReplacement ({ specSelectors }) {
     */}
     {() => store.api == null ? null : <Container fluid textAlign='left' className='fixfloat' style={{ padding: '40px 0px' }}>
       <div style={{ display: 'flex' }}>
-        <div style={{ flex: '0 0 auto', marginRight: '20px' }}>
-          <Image size='small' src={store.api.logo} />
-        </div>
         <div>
           <Header as='h1'>{apiTitle}</Header>
-          <div style={{ display: 'flex', paddingBottom: '1em' }}>
-            <div style={{ marginRight: '20px' }}>
-              {store.api.apiStage == null ? <p style={{ fontWeight: 'bold' }}>Version</p> : null}
-              {endpoint ? <p style={{ fontWeight: 'bold' }}>Endpoint</p> : null}
-              {apiDescription ? <p style={{ fontWeight: 'bold' }}>Description</p> : null}
-              {/* <p style={{ fontWeight: "bold" }}>Usage Plan</p> */}
-            </div>
-            <div>
-              {store.api.apiStage == null ? <p>{version}</p> : null}
-              {endpoint ? <p>{endpoint}</p> : null}
-              {apiDescription ? <p>{apiDescription}</p> : null}
-              {/* <p>{store.api.usagePlan.name}</p> */}
-            </div>
-          </div>
+          {apiDescription ? <div class="infodescp wrapper"> <pre>{parser(apiDescription)}</pre> </div>: null}
           {externalDocs ? (
             <div style={{ paddingBottom: '1em' }}>
               {docsDescription ? <Markdown source={docsDescription} /> : null}
@@ -99,7 +86,7 @@ const SubscriptionButtons = observer(class SubscriptionButtons extends React.Com
     if (apiIsSubscribable) {
       return (
         api.subscribed ? (
-          <p> You are Subscribed to use this API </p>
+          <p></p>
         ) : (
           subscribe(api.usagePlan.id)
         )
